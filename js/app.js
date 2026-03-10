@@ -20,7 +20,7 @@ form.addEventListener("submit", function(e) {
     const record = {
         sit: sit.value,
         pen: penint.value,
-        senfis: semo.value,
+        senfis: emo.value,
         emo: cond.value,
         ints: penal.value,
         date: date.value
@@ -122,7 +122,7 @@ function downloadPDF() {
     const data = getData();
 
     if (data.length === 0) {
-        alert("No hay registros guardados 🌿");
+        alert("No hay registros guardados 🔥");
         return;
     }
 
