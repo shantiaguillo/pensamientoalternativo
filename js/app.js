@@ -7,6 +7,14 @@ const editIndexInput = document.getElementById("editIndex");
 const downloadBtn = document.getElementById("downloadBtn");
 const darkToggle = document.getElementById("darkToggle");
 
+/* INPUTS */
+const sit = document.getElementById("sit");
+const penint = document.getElementById("penint");
+const emo = document.getElementById("emo");
+const cond = document.getElementById("cond");
+const penal = document.getElementById("penal");
+const date = document.getElementById("date");
+
 loadData();
 loadDarkMode();
 
@@ -19,10 +27,10 @@ form.addEventListener("submit", function(e) {
 
     const record = {
         sit: sit.value,
-        pen: penint.value,
-        senfis: emo.value,
-        emo: cond.value,
-        ints: penal.value,
+        penint: penint.value,
+        emo: emo.value,
+        cond: cond.value,
+        penal: penal.value,
         date: date.value
     };
 
@@ -51,22 +59,23 @@ function loadData() {
 }
 
 function addRow(record, index) {
+
     const row = document.createElement("tr");
 
-    [record.sit, record.penint, record.emo, record.cond, record.penal].forEach(value => {
+    [
+        record.sit,
+        record.penint,
+        record.emo,
+        record.cond,
+        record.penal,
+        record.date
+    ].forEach(value => {
+
         const cell = document.createElement("td");
         cell.textContent = value;
         row.appendChild(cell);
+
     });
-
-    const intensityCell = document.createElement("td");
-    intensityCell.textContent = record.ints;
-    intensityCell.classList.add(record.ints.toLowerCase());
-    row.appendChild(intensityCell);
-
-    const dateCell = document.createElement("td");
-    dateCell.textContent = record.date;
-    row.appendChild(dateCell);
 
     const actionCell = document.createElement("td");
 
@@ -88,6 +97,7 @@ function addRow(record, index) {
 }
 
 function editRecord(index) {
+
     const data = getData();
     const record = data[index];
 
@@ -100,14 +110,20 @@ function editRecord(index) {
 
     editIndexInput.value = index;
     submitBtn.textContent = "Actualizar Registro";
+
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function deleteRecord(index) {
+
     let data = getData();
-    if (confirm("¿Seguro que deseas eliminar este registro? 🌿")) {
+
+    if (confirm("¿Seguro que deseas eliminar este registro? 🔥")) {
+
         data.splice(index, 1);
+
         localStorage.setItem("emotionalRecords", JSON.stringify(data));
+
         loadData();
     }
 }
@@ -119,6 +135,7 @@ function deleteRecord(index) {
 downloadBtn.addEventListener("click", downloadPDF);
 
 function downloadPDF() {
+
     const data = getData();
 
     if (data.length === 0) {
@@ -126,25 +143,30 @@ function downloadPDF() {
         return;
     }
 
-    // 🔥 Ordenar por fecha (más reciente primero)
     const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     const { jsPDF } = window.jspdf;
+
     const doc = new jsPDF();
+
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
 
-    // Título
     doc.setFontSize(20);
-    doc.setTextColor(40);
     doc.text("Historial Emocional Personal", pageWidth / 2, 20, { align: "center" });
 
     doc.setFontSize(11);
     doc.text(`Generado el: ${new Date().toLocaleDateString()}`, pageWidth / 2, 28, { align: "center" });
 
-    // Tabla
-    const tableColumn = ["Fecha", "Situación", "Pensamiento Intrusivo", "Emoción", "Conducta", "Pensamiento Alternativo"];
-    
+    const tableColumn = [
+        "Fecha",
+        "Situación",
+        "Pensamiento Intrusivo",
+        "Emoción",
+        "Conducta",
+        "Pensamiento Alternativo"
+    ];
+
     const tableRows = sortedData.map(r => [
         r.date,
         r.sit,
@@ -159,11 +181,12 @@ function downloadPDF() {
         body: tableRows,
         startY: 35,
         theme: "striped",
-        headStyles: { fillColor: [76, 175, 80] },
+        headStyles: { fillColor: [76,175,80] },
         styles: { fontSize: 9 },
-        didDrawPage: function (data) {
-            // 🔥 Footer automático en cada página del PDF
+        didDrawPage: function () {
+
             doc.setFontSize(9);
+
             doc.text(
                 "© Santiago Armas 2026 - Registro Emocional Personal",
                 pageWidth / 2,
@@ -175,7 +198,7 @@ function downloadPDF() {
 
     doc.save("historial_emocional.pdf");
 }
-   
+
 /* =========================
    MODO OSCURO
 ========================= */
@@ -183,9 +206,11 @@ function downloadPDF() {
 darkToggle.addEventListener("click", toggleDarkMode);
 
 function toggleDarkMode() {
+
     document.body.classList.toggle("dark");
 
     const isDark = document.body.classList.contains("dark");
+
     localStorage.setItem("darkMode", isDark);
 
     darkToggle.textContent = isDark
@@ -194,9 +219,13 @@ function toggleDarkMode() {
 }
 
 function loadDarkMode() {
+
     const darkSaved = localStorage.getItem("darkMode") === "true";
+
     if (darkSaved) {
+
         document.body.classList.add("dark");
+
         darkToggle.textContent = "☀️ Modo Claro";
     }
 }
